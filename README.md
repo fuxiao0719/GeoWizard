@@ -1,5 +1,4 @@
-# GeoWizard: Unleashing the Diffusion Priors for
-3D Geometry Estimation from a Single Image
+# GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image
 ### [Project Page](https://fuxiao0719.github.io/projects/geowizard/) | [Paper](assets/paper.pdf)
 <br/>
 
