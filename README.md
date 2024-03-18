@@ -7,12 +7,12 @@
 > * Equal contribution; † Corresponding authors                    
 > Arxiv Preprint, 2024
 
-![demo_vid](assets/demo.png)
+![demo_vid](assets/teaser.png)
 
 ### Code are coming soon, please stay tuned!
 
 ## 📚 Related Work
-We also encourage readers to read these concurrent exciting works.
+We also encourage readers to follow these concurrent exciting works.
 - [Marigold](https://arxiv.org/abs/2312.02145): a finetuned diffusion model for estimating monocular depth.
 - [Wonder3D](https://arxiv.org/abs/2310.15008): generate multi-view normal maps and color images and reconstruct high-fidelity textured mesh.
 - [HyperHuman](https://arxiv.org/abs/2310.08579): a latent structural diffusion and a structure-guided refiner for high-resolution human generation.
