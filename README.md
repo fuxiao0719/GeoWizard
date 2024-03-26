@@ -1,5 +1,5 @@
 # GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image
-### [Project Page](https://fuxiao0719.github.io/projects/geowizard/) | [Paper](https://arxiv.org/abs/2403.12013) | [HuggingFace](https://huggingface.co/spaces/lemonaddie/geowizard)
+### [Project Page](https://fuxiao0719.github.io/projects/geowizard/) | [Paper](https://arxiv.org/abs/2403.12013) | [Hugging Face](https://huggingface.co/spaces/lemonaddie/geowizard)
 <br/>
 
 > GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image
@@ -10,7 +10,7 @@
 
 ![demo_vid](assets/teaser.png)
 
-### [HuggingFace demo](https://huggingface.co/spaces/lemonaddie/geowizard) is out! Inference codes will be soon.
+### [Hugging Face demo](https://huggingface.co/spaces/lemonaddie/geowizard) is out! Inference codes will be soon.
 
 ## 📚 Related Work
 We also encourage readers to follow these concurrent exciting works.
