@@ -1,5 +1,5 @@
 # GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image
-### [Project Page](https://fuxiao0719.github.io/projects/geowizard/) | [Paper](https://arxiv.org/abs/2403.12013) | [HuggingFace](https://huggingface.co/spaces/lemonaddie/geowizard)
+### [Project Page](https://fuxiao0719.github.io/projects/geowizard/) | [Paper](https://arxiv.org/abs/2403.12013) | [Hugging Face](https://huggingface.co/spaces/lemonaddie/geowizard)
 <br/>
 
 > GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image
@@ -9,8 +9,6 @@
 > Arxiv Preprint, 2024
 
 ![demo_vid](assets/teaser.png)
-
-### [HuggingFace demo](https://huggingface.co/spaces/lemonaddie/geowizard) is out! Inference codes will be soon.
 
 ## 🛠️ Setup
 
@@ -49,6 +47,13 @@ python run_infer.py \
     --denoise_steps 10 \
     --domain "indoor"
 ```
+
+Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "object". Note that "object" is best for background-free objects, like that in objaverse. We find that "indoor" will suit in most scenarios. Default: "indoor". `--ensemble_size` and `--denoise_steps`: trade-off arguments for speed and performance, more ensembles and denoising steps to get higher accuracy. Default: 3 and 10. 
+
+## 📝 TODO List
+- [x] Add inference code for 3D reconstruction.
+- [x] Add training codes.
+- [x] Test on more different local environments.
 
 
 ## 📚 Related Work
