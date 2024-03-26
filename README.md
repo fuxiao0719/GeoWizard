@@ -51,10 +51,9 @@ python run_infer.py \
 Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "object". Note that "object" is best for background-free objects, like that in objaverse. We find that "indoor" will suit in most scenarios. Default: "indoor". `--ensemble_size` and `--denoise_steps`: trade-off arguments for speed and performance, more ensembles and denoising steps to get higher accuracy. Default: 3 and 10. 
 
 ## 📝 TODO List
-- [x] Add inference code for 3D reconstruction.
-- [x] Add training codes.
-- [x] Test on more different local environments.
-
+- [ ] Add inference code for 3D reconstruction.
+- [ ] Add training codes.
+- [ ] Test on more different local environments.
 
 ## 📚 Related Work
 We also encourage readers to follow these concurrent exciting works.
