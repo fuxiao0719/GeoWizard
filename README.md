@@ -12,6 +12,45 @@
 
 ### [HuggingFace demo](https://huggingface.co/spaces/lemonaddie/geowizard) is out! Inference codes will be soon.
 
+## 🛠️ Setup
+
+We test our codes under the following environment: `Ubuntu 22.04, Python 3.9.18, CUDA 11.8`.
+1. Clone this repository.
+```bash
+git clone git@github.com:fuxiao0719/GeoWizard.git
+cd GeoWizard
+```
+2. Install packages
+```bash
+conda create -n geowizard python=3.9
+conda activate geowizard
+pip install -r requirements.txt
+cd geowizard
+```
+
+## 🤖 Usage
+
+### Run inference for depth & normal
+
+Place your images in a directory `input/example` (for example, where we have prepared several cases), and run the following inference. The depth and normal outputs will be stored in `output/example`.
+
+```bash
+python run_infer.py \
+    --input_dir ${input path} \
+    --output_dir ${output path} \
+    --ensemble_size ${ensemble size} \
+    --denoise_steps ${denoising steps} \
+    --domain ${data type}
+# e.g.
+python run_infer.py \
+    --input_dir input/example \
+    --output_dir output \
+    --ensemble_size 3 \
+    --denoise_steps 10 \
+    --domain "indoor"
+```
+
+
 ## 📚 Related Work
 We also encourage readers to follow these concurrent exciting works.
 - [Marigold](https://arxiv.org/abs/2312.02145): a finetuned diffusion model for estimating monocular depth.
