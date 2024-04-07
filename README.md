@@ -60,7 +60,7 @@ We also encourage readers to follow these concurrent exciting works.
 - [Marigold](https://arxiv.org/abs/2312.02145): a finetuned diffusion model for estimating monocular depth.
 - [Wonder3D](https://arxiv.org/abs/2310.15008): generate multi-view normal maps and color images and reconstruct high-fidelity textured mesh.
 - [HyperHuman](https://arxiv.org/abs/2310.08579): a latent structural diffusion and a structure-guided refiner for high-resolution human generation.
-- [GenPercept](https://arxiv.org/abs/2403.0609): a finetuned UNet for a lot of downstream image understanding tasks.
+- [GenPercept](https://arxiv.org/abs/2403.06090): a finetuned UNet for a lot of downstream image understanding tasks.
 - [Metric3D](https://github.com/YvanYin/Metric3D): a discriminative metric depth and surface normal estimator.
 
 ## 🔗 Citation
