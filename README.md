@@ -50,6 +50,22 @@ python run_infer.py \
 
 Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "object". Note that "object" is best for background-free objects, like that in objaverse. We find that "indoor" will suit in most scenarios. Default: "indoor". `--ensemble_size` and `--denoise_steps`: trade-off arguments for speed and performance, more ensembles and denoising steps to get higher accuracy. Default: 3 and 10. 
 
+### Run inference for depth & normal (object-oriented)
+
+(2024-04-13) To further provide support for object-level applications, we additionally train a model on Objaverse with some architecture modifications. Now it can generate more realistic and three-dimensional normal maps on some rare images (e.g., cartoon style, see below).
+
+```bash
+python run_infer_object.py \
+    --input_dir ${input path} \
+    --output_dir ${output path} \
+    --ensemble_size ${ensemble size} \
+    --denoise_steps ${denoising steps} \
+    --domain "object"
+```
+
+<img src=assets/object_20240413.jpg width=85% />
+
+
 ## 📝 TODO List
 - [ ] Add inference code for 3D reconstruction.
 - [ ] Add training codes.
