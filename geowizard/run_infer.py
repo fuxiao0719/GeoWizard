@@ -1,4 +1,4 @@
-# Adapted from Marigold (CVPR'24) ：https://github.com/prs-eth/Marigold
+# Adapted from Marigold ：https://github.com/prs-eth/Marigold
 
 import argparse
 import os

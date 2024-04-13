@@ -1,4 +1,4 @@
-# A reimplemented version in public environments by Xiao Fu and Mu Hu
+# Adapted from Marigold ：https://github.com/prs-eth/Marigold
 
 from typing import Any, Dict, Union
 
