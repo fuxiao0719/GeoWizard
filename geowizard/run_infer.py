@@ -1,4 +1,4 @@
-# A reimplemented version in public environments by Xiao Fu and Mu Hu
+# Adapted from Marigold (CVPR'24) ：https://github.com/prs-eth/Marigold
 
 import argparse
 import os
