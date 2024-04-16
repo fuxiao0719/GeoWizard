@@ -52,7 +52,7 @@ Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "ob
 
 ### Run inference for depth & normal (object-oriented)
 
-(2024-04-13) To further provide support for object-level applications, we additionally train a model on Objaverse with some architecture modifications. Now it can generate more realistic and three-dimensional normal maps on some rare images (e.g., cartoon style, see below).
+(2024-04-13) To further meet the requirements for object-level applications, we additionally train a model on Objaverse with some architecture modifications. Now it can generate more realistic and three-dimensional normal maps on some rare images (e.g., cartoon style, see below).
 
 ```bash
 python run_infer_object.py \
@@ -60,6 +60,13 @@ python run_infer_object.py \
     --output_dir ${output path} \
     --ensemble_size ${ensemble size} \
     --denoise_steps ${denoising steps} \
+    --domain "object"
+# e.g.
+python run_infer_object.py \
+    --input_dir input/example_object \
+    --output_dir output \
+    --ensemble_size 3 \
+    --denoise_steps 10 \
     --domain "object"
 ```
 
