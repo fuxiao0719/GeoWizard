@@ -52,7 +52,7 @@ Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "ob
 
 ### Run inference for depth & normal (object-oriented)
 
-(2024-04-13) To further meet the requirements for object-level applications, we additionally train a model on Objaverse with some architecture modifications. Now it can generate more realistic and three-dimensional normal maps on some rare images (e.g., cartoon style, see below).
+(2024-04-13) To further meet the community feedback on our v1-model for object-level applications, we additionally train a model on Objaverse with some architecture modifications. Now it can generate more realistic and three-dimensional normal maps on some rare images (e.g., cartoon style, see below).
 
 ```bash
 python run_infer_object.py \
@@ -72,9 +72,25 @@ python run_infer_object.py \
 
 <img src=assets/object_20240413.jpg width=85% />
 
+### Run inference for 3D reconstruction using BiNI algorithm
+
+First put the generated depth & normal npy files under the folder `bini/data` along with the segmented foreground mask (mask.png. If not set, it will utilize the whole image as mask). We provide two examples for the data structure. Then run the command as follow.
+
+```bash
+cd bini
+
+python bilateral_normal_integration_numpy.py \
+    --path ${input path} \
+    -k ${k} \
+    --iter ${iterations} \
+    --tol ${tol}
+
+# e.g. (paper setting)
+python bilateral_normal_integration_numpy.py --path data/test_1 -k 2 --iter 50 --tol 1e-5
+```
+
 
 ## 📝 TODO List
-- [ ] Add inference code for 3D reconstruction.
 - [ ] Add training codes.
 - [ ] Test on more different local environments.
 
