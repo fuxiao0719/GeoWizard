@@ -101,6 +101,7 @@ We also encourage readers to follow these concurrent exciting works.
 - [HyperHuman](https://arxiv.org/abs/2310.08579): a latent structural diffusion and a structure-guided refiner for high-resolution human generation.
 - [GenPercept](https://arxiv.org/abs/2403.06090): a finetuned UNet for a lot of downstream image understanding tasks.
 - [Metric3D](https://github.com/YvanYin/Metric3D): a discriminative metric depth and surface normal estimator.
+- [IC-Light](https://github.com/lllyasviel/IC-Light): text-conditioned relighting model and background-conditioned relighting model.
 
 ## 🔗 Citation
 
