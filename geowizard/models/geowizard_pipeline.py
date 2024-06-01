@@ -245,8 +245,7 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
         rgb_latent = rgb_latent.repeat(2,1,1,1)
 
         # Batched img embedding
-        if self.img_embed is None:
-            self.__encode_img_embed(input_rgb)
+        self.__encode_img_embed(input_rgb)
         
         batch_img_embed = self.img_embed.repeat(
             (rgb_latent.shape[0], 1, 1)
