@@ -16,7 +16,7 @@ def ensemble_normals(input_images:torch.Tensor):
     normal_pred[1,:,:] = torch.sin(theta) * torch.sin(phi)
     normal_pred[2,:,:] = torch.cos(theta) 
 
-    angle_error = torch.acos(torch.cosine_similarity(normal_pred[None], normal_preds, dim=1))
+    angle_error = torch.acos(torch.clip(torch.cosine_similarity(normal_pred[None], normal_preds, dim=1),-0.999, 0.999))
     normal_idx = torch.argmin(angle_error.reshape(bsz,-1).sum(-1))
 
     return normal_preds[normal_idx]
