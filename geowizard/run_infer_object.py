@@ -199,7 +199,7 @@ if __name__=="__main__":
             # Read input image
             input_image = Image.open(rgb_path)
 
-            # predict the depth here
+            # predict the depth & normal here
             pipe_out = pipe(input_image,
                 denoising_steps = denoise_steps,
                 ensemble_size= ensemble_size,
