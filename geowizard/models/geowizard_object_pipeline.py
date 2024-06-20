@@ -194,6 +194,8 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
         normal_colored = ((normal_pred + 1)/2 * 255).astype(np.uint8)
         normal_colored_img = Image.fromarray(normal_colored)
         
+        self.img_embed = None
+
         return DepthNormalPipelineOutput(
             depth_np = depth_pred,
             depth_colored = depth_colored_img,

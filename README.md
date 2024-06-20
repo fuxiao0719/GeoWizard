@@ -38,6 +38,7 @@ python run_infer.py \
     --output_dir ${output path} \
     --ensemble_size ${ensemble size} \
     --denoise_steps ${denoising steps} \
+    --seed ${seed} \
     --domain ${data type}
 # e.g.
 python run_infer.py \
@@ -45,6 +46,7 @@ python run_infer.py \
     --output_dir output \
     --ensemble_size 5 \
     --denoise_steps 10 \
+    --seed 0 \
     --domain "indoor"
 ```
 
@@ -60,13 +62,15 @@ python run_infer_object.py \
     --output_dir ${output path} \
     --ensemble_size ${ensemble size} \
     --denoise_steps ${denoising steps} \
+    --seed ${seed} \
     --domain "object"
 # e.g.
 python run_infer_object.py \
     --input_dir input/example_object \
-    --output_dir output \
+    --output_dir output_object \
     --ensemble_size 5 \
     --denoise_steps 10 \
+    --seed 0 \
     --domain "object"
 ```
 
