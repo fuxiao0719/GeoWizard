@@ -1,4 +1,4 @@
-# GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image (ECCV 2024)
+# GeoWizard: Unleashing the Diffusion Priors for 3D Geometry Estimation from a Single Image
 ### [Project Page](https://fuxiao0719.github.io/projects/geowizard/) | [Paper](https://arxiv.org/abs/2403.12013) | [Hugging Face](https://huggingface.co/spaces/lemonaddie/geowizard)
 <br/>
 
