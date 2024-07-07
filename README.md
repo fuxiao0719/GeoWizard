@@ -44,13 +44,13 @@ python run_infer.py \
 python run_infer.py \
     --input_dir input/example \
     --output_dir output \
-    --ensemble_size 5 \
+    --ensemble_size 3 \
     --denoise_steps 10 \
     --seed 0 \
     --domain "indoor"
 ```
 
-Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "object". Note that "object" is best for background-free objects, like that in objaverse. We find that "indoor" will suit in most scenarios. Default: "indoor". `--ensemble_size` and `--denoise_steps`: trade-off arguments for speed and performance, more ensembles and denoising steps to get higher accuracy. Default: 5 and 10 (For academic comparison, please set 10 and 50, respectively). 
+Inference settings: `--domain`: Data type. Options: "indoor", "outdoor", and "object". Note that "object" is best for background-free objects, like that in objaverse. We find that "indoor" will suit in most scenarios. Default: "indoor". `--ensemble_size` and `--denoise_steps`: trade-off arguments for speed and performance, more ensembles and denoising steps to get higher accuracy. Default: 3 and 10 (For academic comparison, please set 10 and 50, respectively). 
 
 ### Run inference for depth & normal (object-oriented)
 
@@ -68,7 +68,7 @@ python run_infer_object.py \
 python run_infer_object.py \
     --input_dir input/example_object \
     --output_dir output_object \
-    --ensemble_size 5 \
+    --ensemble_size 3 \
     --denoise_steps 10 \
     --seed 0 \
     --domain "object"
