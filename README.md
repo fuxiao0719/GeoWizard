@@ -8,7 +8,11 @@
 > * Equal contribution              
 > ECCV, 2024
 
-![demo_vid](assets/teaser.png)
+<!-- ![demo_vid](assets/teaser.png) -->
+Point Cloud Rendering Using Depth
+![monocular](assets/depth2pcd.gif)
+Image Relighting Using Normal
+![monocular](assets/normal_relighting.gif)
 
 ## 🛠️ Setup
 
