@@ -14,6 +14,12 @@ Point Cloud Rendering Using Depth
 Image Relighting Using Normal
 ![monocular](assets/normal_relighting.gif)
 
+## News 
+- `[2024/7/10]` Release [GeoWizard V2](https://github.com/fuxiao0719/GeoWizard), a version with more robust and three-dimensional normal.
+- `[2024/7/02]` Paper accepted to [ECCV'24](https://eccv.ecva.net/).
+- `[2024/3/25]` Thanks to [Kijai](https://github.com/kijai) for incorporating GeoWizard into [ComfyUI Version](https://github.com/kijai/ComfyUI-Geowizard).
+- `[2024/3/19]` Release [paper](https://arxiv.org/pdf/2403.12013), [project page](https://fuxiao0719.github.io/projects/geowizard/), and [code](https://github.com/fuxiao0719/GeoWizard).
+
 ## 🛠️ Setup
 
 We test our codes under the following environment: `Ubuntu 22.04, Python 3.9.18, CUDA 11.8`.
