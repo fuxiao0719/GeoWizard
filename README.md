@@ -111,7 +111,7 @@ We also encourage readers to follow these concurrent exciting works.
 - [Metric3D](https://github.com/YvanYin/Metric3D): a discriminative metric depth and surface normal estimator.
 - [IC-Light](https://github.com/lllyasviel/IC-Light): text-conditioned relighting model and background-conditioned relighting model.
 
-## 🔗 Citation
+## 🔗 Citation & License 
 
 ```bibtex
 @article{fu2024geowizard,
@@ -121,3 +121,5 @@ We also encourage readers to follow these concurrent exciting works.
   year={2024}
 }
 ```
+
+The code is under a 2-clause BSD License for non-commercial usage.
