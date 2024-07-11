@@ -130,7 +130,6 @@ if __name__=="__main__":
     if seed is None:
         import time
         seed = int(time.time())
-    seed_all(seed)
 
     # Output directories
     output_dir_color = os.path.join(output_dir, "depth_colored")
@@ -186,6 +185,9 @@ if __name__=="__main__":
         os.makedirs(output_dir, exist_ok=True)
 
         for test_file in tqdm(test_files, desc="Estimating Depth & Normal", leave=True):
+
+            seed_all(seed)
+            
             rgb_path = os.path.join(input_dir, test_file)
 
             # Read input image
