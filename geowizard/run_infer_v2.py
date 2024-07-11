@@ -13,7 +13,7 @@ import json
 import cv2
 
 import sys
-from models.geowizard_object_pipeline import DepthNormalEstimationPipeline
+from models.geowizard_v2_pipeline import DepthNormalEstimationPipeline
 from utils.seed_all import seed_all
 import matplotlib.pyplot as plt
 from utils.depth2normal import *
@@ -172,7 +172,7 @@ if __name__=="__main__":
     text_encoder = CLIPTextModel.from_pretrained(stable_diffusion_repo_path, subfolder='text_encoder')
     scheduler = DDIMScheduler.from_pretrained(stable_diffusion_repo_path, subfolder='scheduler')
     tokenizer = CLIPTokenizer.from_pretrained(stable_diffusion_repo_path, subfolder='tokenizer')
-    unet = UNet2DConditionModel.from_pretrained(checkpoint_path, subfolder='unet_object')
+    unet = UNet2DConditionModel.from_pretrained(checkpoint_path, subfolder='unet_v2')
                 
     pipe = DepthNormalEstimationPipeline(vae=vae,
                                 text_encoder=text_encoder,
