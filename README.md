@@ -75,7 +75,7 @@ python run_infer_v2.py \
     --seed ${seed} \
     --domain "indoor"
 # e.g.
-python run_infer.py \
+python run_infer_v2.py \
     --input_dir input/example \
     --output_dir output \
     --ensemble_size 3 \
@@ -83,7 +83,7 @@ python run_infer.py \
     --seed 0 \
     --domain "indoor"
 
-python run_infer_object.py \
+python run_infer_v2.py \
     --input_dir input/example_object \
     --output_dir output_object \
     --ensemble_size 3 \
