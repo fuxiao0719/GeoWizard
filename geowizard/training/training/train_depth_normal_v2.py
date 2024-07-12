@@ -560,6 +560,21 @@ def main():
         # Only show the progress bar once on each machine.
         disable=not accelerator.is_local_main_process,
     )
+
+    # Encode text embedding for prompt
+    prompt_list = ['', 'indoor geometry', 'outdoor geometry', 'object geometry']
+    text_embed_list = []
+    for prompt in prompt_list:
+        text_inputs =tokenizer(
+            prompt,
+            padding="do_not_pad",
+            max_length=tokenizer.model_max_length,
+            truncation=True,
+            return_tensors="pt",
+        )
+        text_input_ids = text_inputs.input_ids.to(text_encoder.device) #[1,2]
+        text_embed = text_encoder(text_input_ids)[0].to(weight_dtype)
+        text_embed_list.append(text_embed)
     
     # using the epochs to training the model
     for epoch in range(first_epoch, args.num_train_epochs):
@@ -593,7 +608,7 @@ def main():
 
                 # here is the setting batch size, in our settings, it can be 1.0
                 bsz = rgb_latents.shape[0]
-            
+                
                 # in the Stable Diffusion, the iterations numbers is 1000 for adding the noise and denosing.
                 # Sample a random timestep for each image
                 timesteps = torch.randint(0, noise_scheduler.config.num_train_timesteps, (bsz,), device=depth_latents.device).repeat(2)
@@ -604,18 +619,6 @@ def main():
                 
                 # add noise to the depth lantents
                 noisy_geo_latents = noise_scheduler.add_noise(geo_latents, noise, timesteps)
-
-                # Encode text embedding for prompt
-                prompt = batch['domain_text']
-                text_inputs =tokenizer(
-                    prompt,
-                    padding="do_not_pad",
-                    max_length=tokenizer.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
-                )
-                text_input_ids = text_inputs.input_ids.to(text_encoder.device) #[1,2]
-                text_embed = text_encoder(text_input_ids)[0].to(weight_dtype)
 
                 # Get the target for loss depending on the prediction type
                 if args.prediction_type is not None:
@@ -628,7 +631,15 @@ def main():
                 else:
                     raise ValueError(f"Unknown prediction type {noise_scheduler.config.prediction_type}")
 
-                batch_text_embed = text_embed.repeat((bsz*2, 1, 1))  # [B*2, 2, 1024]
+                batch_text_embed = text_embed_list[0].repeat((bsz, 1, 1))  # [B, 2, 1024]
+                for i in range(len(batch['domain'])):
+                    if batch['domain'][i] == torch.Tensor([1., 0., 0.]):
+                        batch_text_embed[i] = text_embed_list[1]
+                    elif batch['domain'][i] == torch.Tensor([0., 1., 0.]):
+                        batch_text_embed[i] = text_embed_list[2]
+                    elif batch['domain'][i] == torch.Tensor([0., 0., 1.]):
+                        batch_text_embed[i] = text_embed_list[3]
+                batch_text_embed = batch_text_embed.repeat((2, 1, 1))  # [B*2, 2, 1024]
     
                 # hybrid hierarchical switcher 
                 geo_class = torch.tensor([[0, 1], [1, 0]], dtype=weight_dtype, device=device)

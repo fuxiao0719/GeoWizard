@@ -186,7 +186,6 @@ class MixDataset(Dataset):
         # HyperSim
         if sample_path['dataset'] == 'hypersim':
             sample['domain'] = torch.Tensor([1., 0., 0.]) # indoor
-            sample['domain_text'] = 'indoor geometry'
 
             sample['rgb'] = read_img(sample_path['rgb'])  # [H, W, 3]
             sample['depth'], sample['normal'] = read_depth_normal_hypersim(sample_path['depth'], sample_path['normal'], sample_path['cam_in'], sample_path['metric_scale'])
@@ -217,7 +216,6 @@ class MixDataset(Dataset):
         # replica
         if sample_path['dataset'] == 'replica':
             sample['domain'] = torch.Tensor([1., 0., 0.]) # indoor
-            sample['domain_text'] = 'indoor geometry'
 
             sample['rgb'] = read_img(sample_path['rgb'])  # [H, W, 3]
             sample['depth'], sample['normal'], invalid_mask = read_depth_normal_replica(sample_path['depth'], sample_path['normal'], sample_path['cam_in'], sample_path['metric_scale'])
@@ -236,7 +234,6 @@ class MixDataset(Dataset):
         # 3d ken burns
         if sample_path['dataset'] == '3d_ken_burns':
             sample['domain'] = torch.Tensor([0., 1., 0.]) # outdoor
-            sample['domain_text'] = 'outdoor geometry'
 
             if np.random.random() < 0.5:
                 rgb_path = sample_path['rgb_l']
@@ -265,7 +262,6 @@ class MixDataset(Dataset):
         if sample_path['dataset'] == 'simulation_disparity':
 
             sample['domain'] = torch.Tensor([0., 1., 0.]) # outdoor
-            sample['domain_text'] = 'outdoor geometry'
             
             sample['rgb'] = read_img(sample_path['rgb'])  # [H, W, 3]
             sample['depth'], sample['normal'] = read_depth_normal_simulation_disparity(sample_path['depth'], sample_path['normal'], sample_path['cam_in'], sample_path['metric_scale'])
@@ -283,7 +279,6 @@ class MixDataset(Dataset):
         # objaverse 
         if sample_path['dataset'] == 'objaverse':
             sample['domain'] = torch.Tensor([0., 0., 1.]) # object
-            sample['domain_text'] = 'object geometry'
 
             views = ['00000', '00010', '00020', '00030']
             idx = np.random.randint(0,4)
