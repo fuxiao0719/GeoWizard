@@ -15,8 +15,12 @@ from diffusers import (
 from models.unet_2d_condition import UNet2DConditionModel
 from diffusers.utils import BaseOutput
 from transformers import CLIPTextModel, CLIPTokenizer
+from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
+import torchvision.transforms.functional as TF
+from torchvision.transforms import InterpolationMode
 
 from utils.image_util import resize_max_res,chw2hwc,colorize_depth_maps
+from utils.colormap import kitti_colormap
 from utils.depth_ensemble import ensemble_depths
 from utils.normal_ensemble import ensemble_normals
 from utils.batch_size import find_batch_size
@@ -51,8 +55,8 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
                  unet:UNet2DConditionModel,
                  vae:AutoencoderKL,
                  scheduler:DDIMScheduler,
-                 text_encoder:CLIPTextModel,
-                 tokenizer:CLIPTokenizer,
+                 image_encoder:CLIPVisionModelWithProjection,
+                 feature_extractor:CLIPImageProcessor,
                  ):
         super().__init__()
             
@@ -60,10 +64,10 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
             unet=unet,
             vae=vae,
             scheduler=scheduler,
-            text_encoder=text_encoder,
-            tokenizer=tokenizer,
+            image_encoder=image_encoder,
+            feature_extractor=feature_extractor,
         )
-        self.empty_text_embed = None
+        self.img_embed = None  
 
     @torch.no_grad()
     def __call__(self,
@@ -193,6 +197,8 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
 
         normal_colored = ((normal_pred + 1)/2 * 255).astype(np.uint8)
         normal_colored_img = Image.fromarray(normal_colored)
+
+        self.img_embed = None
         
         return DepthNormalPipelineOutput(
             depth_np = depth_pred,
@@ -202,18 +208,24 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
             uncertainty=pred_uncert,
         )
     
-    def __encode_text(self, prompt):
-        text_inputs = self.tokenizer(
-            prompt,
-            padding="do_not_pad",
-            max_length=self.tokenizer.model_max_length,
-            truncation=True,
-            return_tensors="pt",
+    def __encode_img_embed(self, rgb):
+        """
+        Encode clip embeddings for img
+        """
+        clip_image_mean = torch.as_tensor(self.feature_extractor.image_mean)[:,None,None].to(device=self.device, dtype=self.dtype)
+        clip_image_std = torch.as_tensor(self.feature_extractor.image_std)[:,None,None].to(device=self.device, dtype=self.dtype)
+
+        img_in_proc = TF.resize((rgb +1)/2, 
+            (self.feature_extractor.crop_size['height'], self.feature_extractor.crop_size['width']), 
+            interpolation=InterpolationMode.BICUBIC, 
+            antialias=True
         )
-        text_input_ids = text_inputs.input_ids.to(self.text_encoder.device) #[1,2]
-        # print(text_input_ids.shape)
-        text_embed = self.text_encoder(text_input_ids)[0].to(self.dtype) #[1,2,1024]
-        return text_embed
+        # do the normalization in float32 to preserve precision
+        img_in_proc = ((img_in_proc.float() - clip_image_mean) / clip_image_std).to(self.dtype)        
+        img_embed = self.image_encoder(img_in_proc).image_embeds.unsqueeze(1).to(self.dtype)
+
+        self.img_embed = img_embed
+
         
     @torch.no_grad()
     def single_infer(self,input_rgb:torch.Tensor,
@@ -233,19 +245,28 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
         # Initial geometric maps (Guassian noise)
         geo_latent = torch.randn(rgb_latent.shape, device=device, dtype=self.dtype).repeat(2,1,1,1)
         rgb_latent = rgb_latent.repeat(2,1,1,1)
+
+        # Batched img embedding
+        if self.img_embed is None:
+            self.__encode_img_embed(input_rgb)
         
+        batch_img_embed = self.img_embed.repeat(
+            (rgb_latent.shape[0], 1, 1)
+        )  # [B, 1, 768]
+
         # hybrid switcher 
         geo_class = torch.tensor([[0., 1.], [1, 0]], device=device, dtype=self.dtype)
         geo_embedding = torch.cat([torch.sin(geo_class), torch.cos(geo_class)], dim=-1)
         
         if domain == "indoor":
-            batch_text_embeds = self.__encode_text('indoor geometry').repeat((rgb_latent.shape[0],1,1))
+            domain_class = torch.tensor([[1., 0., 0]], device=device, dtype=self.dtype).repeat(2,1)
         elif domain == "outdoor":
-            batch_text_embeds = self.__encode_text('outdoor geometry').repeat((rgb_latent.shape[0],1,1))
+            domain_class = torch.tensor([[0., 1., 0]], device=device, dtype=self.dtype).repeat(2,1)
         elif domain == "object":
-            batch_text_embeds = self.__encode_text('object geometry').repeat((rgb_latent.shape[0],1,1))
+            domain_class = torch.tensor([[0., 0., 1]], device=device, dtype=self.dtype).repeat(2,1)
+        domain_embedding = torch.cat([torch.sin(domain_class), torch.cos(domain_class)], dim=-1)
 
-        class_embedding = geo_embedding
+        class_embedding = torch.cat((geo_embedding, domain_embedding), dim=-1)
 
         # Denoising loop
         if show_pbar:
@@ -263,7 +284,7 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
 
             # predict the noise residual
             noise_pred = self.unet(
-                unet_input, t.repeat(2), encoder_hidden_states=batch_text_embeds, class_labels=class_embedding
+                unet_input, t.repeat(2), encoder_hidden_states=batch_img_embed, class_labels=class_embedding
             ).sample  # [B, 4, h, w]
 
             # compute the previous noisy sample x_t -> x_t-1

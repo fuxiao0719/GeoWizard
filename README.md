@@ -99,7 +99,7 @@ python run_infer_v2.py \
 First put the generated depth & normal npy files under the folder `bini/data` along with the segmented foreground mask (mask.png. If not set, it will utilize the whole image as mask). We provide two examples for the data structure. Then run the command as follow.
 
 ```bash
-cd bini
+cd ../bini
 
 python bilateral_normal_integration_numpy.py \
     --path ${input path} \
@@ -111,10 +111,18 @@ python bilateral_normal_integration_numpy.py \
 python bilateral_normal_integration_numpy.py --path data/test_1 -k 2 --iter 50 --tol 1e-5
 ```
 
+### Training
+Here we provide two training scripts `train_depth_normal.py` and `train_depth_normal_v2.py`. You need to modify the configs accordingly. We use 8GPUs for training as default, and you can switch `8gpu.yaml` to `1gpu.yaml` with fewer computing resources. We provide our dataloader format in `dataloader/mix_loader.py` and encourage you to train it on your own customized datasets.
 
-## 📝 TODO List
-- [ ] Add training codes.
-- [ ] Test on more different local environments.
+```bash
+cd training/scripts
+
+# v1 model
+sh train_depth_normal.sh
+
+# v2 model
+sh train_depth_normal_v2.sh
+```
 
 ## 📚 Related Work
 We also encourage readers to follow these concurrent exciting works.
