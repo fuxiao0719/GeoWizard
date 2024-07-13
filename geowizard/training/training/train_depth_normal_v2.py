@@ -21,7 +21,6 @@ sys.path.append("..")
 
 from accelerate import Accelerator
 import transformers
-import datasets
 import numpy as np
 from accelerate.logging import get_logger
 from accelerate.utils import set_seed
@@ -48,8 +47,7 @@ import accelerate
 import cv2
 from utils.de_normalized import align_scale_shift
 from utils.depth2normal import *
-
-from training.dataset_configuration import prepare_dataset, depth_scale_shift_normalization, depth_scale_normalization, resize_max_res_tensor
+from utils.dataset_configuration import prepare_dataset, depth_scale_shift_normalization,  resize_max_res_tensor
 
 from PIL import Image
 
@@ -73,17 +71,17 @@ def parse_args():
         help="Path to pretrained model or model identifier from huggingface.co/models.",
     )
 
-    parser.add_argument(
-        "--input_rgb_path",
-        type=str,
-        required=True,
-        help="Path to the input image.",
-    )
+    # parser.add_argument(
+    #     "--input_rgb_path",
+    #     type=str,
+    #     required=True,
+    #     help="Path to the input image.",
+    # )
     
     parser.add_argument(
         "--dataset_path",
         type=str,
-        default="/data1/liu",
+        default="/data/",
         required=True,
         help="The Root Dataset Path.",
     )
@@ -457,10 +455,10 @@ def main():
     # get the training dataset
     with accelerator.main_process_first():
         train_loader, dataset_config_dict = prepare_dataset(data_dir=args.dataset_path,
-                                                                      batch_size=args.train_batch_size,
-                                                                      test_batch=1,
-                                                                      datathread=args.dataloader_num_workers,
-                                                                      logger=logger)
+                                                                    batch_size=args.train_batch_size,
+                                                                    test_batch=1,
+                                                                    datathread=args.dataloader_num_workers,
+                                                                    logger=logger)
 
     # because the optimizer not optimized every time, so we need to calculate how many steps it optimizes,
     # it is usually optimized by 
@@ -511,7 +509,7 @@ def main():
     if accelerator.is_main_process:
         tracker_config = dict(vars(args))
         accelerator.init_trackers(args.tracker_project_name, tracker_config)
-    
+
     # Here is the DDP training: actually is 4
     total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
 
@@ -562,7 +560,7 @@ def main():
     )
 
     # Encode text embedding for prompt
-    prompt_list = ['', 'indoor geometry', 'outdoor geometry', 'object geometry']
+    prompt_list = ['indoor geometry', 'outdoor geometry', 'object geometry']
     text_embed_list = []
     for prompt in prompt_list:
         text_inputs =tokenizer(
@@ -572,10 +570,10 @@ def main():
             truncation=True,
             return_tensors="pt",
         )
-        text_input_ids = text_inputs.input_ids.to(text_encoder.device) #[1,2]
+        text_input_ids = text_inputs.input_ids.to(text_encoder.device)
         text_embed = text_encoder(text_input_ids)[0].to(weight_dtype)
         text_embed_list.append(text_embed)
-    
+
     # using the epochs to training the model
     for epoch in range(first_epoch, args.num_train_epochs):
         unet.train() 
@@ -631,15 +629,15 @@ def main():
                 else:
                     raise ValueError(f"Unknown prediction type {noise_scheduler.config.prediction_type}")
 
-                batch_text_embed = text_embed_list[0].repeat((bsz, 1, 1))  # [B, 2, 1024]
+                batch_text_embed = torch.zeros_like(text_embed_list[0]).repeat((bsz, 1, 1))  # [B, 4, 1024]
                 for i in range(len(batch['domain'])):
-                    if batch['domain'][i] == torch.Tensor([1., 0., 0.]):
+                    if batch['domain'][i][0].item() == 1:
+                        batch_text_embed[i] = text_embed_list[0]
+                    elif batch['domain'][i][1].item() == 1:
                         batch_text_embed[i] = text_embed_list[1]
-                    elif batch['domain'][i] == torch.Tensor([0., 1., 0.]):
+                    elif batch['domain'][i][2].item() == 1:
                         batch_text_embed[i] = text_embed_list[2]
-                    elif batch['domain'][i] == torch.Tensor([0., 0., 1.]):
-                        batch_text_embed[i] = text_embed_list[3]
-                batch_text_embed = batch_text_embed.repeat((2, 1, 1))  # [B*2, 2, 1024]
+                batch_text_embed = batch_text_embed.repeat((2, 1, 1))  # [B*2, 4, 1024]
     
                 # hybrid hierarchical switcher 
                 geo_class = torch.tensor([[0, 1], [1, 0]], dtype=weight_dtype, device=device)
@@ -651,9 +649,9 @@ def main():
                 unet_input = torch.cat((rgb_latents.repeat(2,1,1,1), noisy_geo_latents), dim=1)
 
                 noise_pred = unet(unet_input, 
-                                  timesteps, 
-                                  encoder_hidden_states=batch_text_embed,
-                                  class_labels=class_embedding).sample  # [B, 4, h, w]
+                                timesteps, 
+                                encoder_hidden_states=batch_text_embed,
+                                class_labels=class_embedding).sample 
                 loss = F.mse_loss(noise_pred.float(), target.float(), reduction="mean")
 
                 # Gather the losses across all processes for logging (if we use distributed training).

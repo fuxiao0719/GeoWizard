@@ -21,7 +21,6 @@ sys.path.append("..")
 
 from accelerate import Accelerator
 import transformers
-import datasets
 import numpy as np
 from accelerate.logging import get_logger
 from accelerate.utils import set_seed
@@ -52,7 +51,7 @@ import cv2
 from utils.de_normalized import align_scale_shift
 from utils.depth2normal import *
 
-from training.dataset_configuration import prepare_dataset, depth_scale_shift_normalization,  resize_max_res_tensor
+from utils.dataset_configuration import prepare_dataset, depth_scale_shift_normalization,  resize_max_res_tensor
 
 from PIL import Image
 
@@ -77,21 +76,21 @@ def parse_args():
         help="Path to pretrained model or model identifier from huggingface.co/models.",
     )
 
-    parser.add_argument(
-        "--input_rgb_path",
-        type=str,
-        required=True,
-        help="Path to the input image.",
-    )
-    
+    # parser.add_argument(
+    #     "--input_rgb_path",
+    #     type=str,
+    #     required=True,
+    #     help="Path to the input image.",
+    # )
+
     parser.add_argument(
         "--dataset_path",
         type=str,
-        default="/data1/liu",
+        default="/data/",
         required=True,
         help="The Root Dataset Path.",
     )
-    
+
     parser.add_argument(
         "--max_train_samples",
         type=int,
@@ -462,10 +461,10 @@ def main():
     # get the training dataset
     with accelerator.main_process_first():
         train_loader, dataset_config_dict = prepare_dataset(data_dir=args.dataset_path,
-                                                                      batch_size=args.train_batch_size,
-                                                                      test_batch=1,
-                                                                      datathread=args.dataloader_num_workers,
-                                                                      logger=logger)
+                                                                    batch_size=args.train_batch_size,
+                                                                    test_batch=1,
+                                                                    datathread=args.dataloader_num_workers,
+                                                                    logger=logger)
 
     # because the optimizer not optimized every time, so we need to calculate how many steps it optimizes,
     # it is usually optimized by 
@@ -632,7 +631,7 @@ def main():
                 else:
                     raise ValueError(f"Unknown prediction type {noise_scheduler.config.prediction_type}")
 
-                batch_imgs_embed = imgs_embed.repeat((bsz, 1, 1))  # [B*2, 1, 768]
+                batch_imgs_embed = imgs_embed.repeat((2, 1, 1))  # [B*2, 1, 768]
 
                 # hybrid hierarchical switcher 
                 geo_class = torch.tensor([[0, 1], [1, 0]], dtype=weight_dtype, device=device)
@@ -647,9 +646,9 @@ def main():
                 unet_input = torch.cat((rgb_latents.repeat(2,1,1,1), noisy_geo_latents), dim=1)
 
                 noise_pred = unet(unet_input, 
-                                  timesteps, 
-                                  encoder_hidden_states=batch_imgs_embed,
-                                  class_labels=class_embedding).sample  # [B, 4, h, w]
+                                timesteps, 
+                                encoder_hidden_states=batch_imgs_embed,
+                                class_labels=class_embedding).sample  # [B, 4, h, w]
                 loss = F.mse_loss(noise_pred.float(), target.float(), reduction="mean")
 
                 # Gather the losses across all processes for logging (if we use distributed training).

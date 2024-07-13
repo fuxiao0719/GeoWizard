@@ -1,8 +1,6 @@
 # accelerate config
 root_path=''
 output_dir=''
-maddr=''
-PORT=''
 
 pretrained_model_name_or_path='stabilityai/stable-diffusion-2'
 train_batch_size=4
@@ -16,8 +14,6 @@ tracker_project_name='pretrain_tracker'
 seed=1234
 
 accelerate launch --config_file ../node_config/8gpu.yaml \
-                --main_process_ip ${maddr} \
-                --main_process_port $PORT \
                 ../training/train_depth_normal.py \
                   --pretrained_model_name_or_path $pretrained_model_name_or_path \
                   --dataset_path $root_path  \
