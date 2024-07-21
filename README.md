@@ -13,8 +13,11 @@ Point Cloud Rendering Using Depth
 ![monocular](assets/depth2pcd.gif)
 Image Relighting Using Normal
 ![monocular](assets/normal_relighting.gif)
+Hair-level Details
+<img src=assets/hair-level_detail.png width=100% />
 
 ## News 
+- `[2024/7/05]` Check out our [Metric3D v2](https://github.com/YvanYin/Metric3D), a sota depth and normal model in terms of accuracy.
 - `[2024/7/02]` Paper accepted to [ECCV'24](https://eccv.ecva.net/).
 - `[2024/4/16]` Release [GeoWizard V2](https://github.com/fuxiao0719/GeoWizard), a version with more robust and three-dimensional normal.
 - `[2024/3/25]` Thanks to [Kijai](https://github.com/kijai) for incorporating GeoWizard into [ComfyUI Version](https://github.com/kijai/ComfyUI-Geowizard).
@@ -130,7 +133,7 @@ We also encourage readers to follow these concurrent exciting works.
 - [Wonder3D](https://arxiv.org/abs/2310.15008): generate multi-view normal maps and color images and reconstruct high-fidelity textured mesh.
 - [HyperHuman](https://arxiv.org/abs/2310.08579): a latent structural diffusion and a structure-guided refiner for high-resolution human generation.
 - [GenPercept](https://arxiv.org/abs/2403.06090): a finetuned UNet for a lot of downstream image understanding tasks.
-- [Metric3D](https://github.com/YvanYin/Metric3D): a discriminative metric depth and surface normal estimator.
+- [Metric3D v2](https://github.com/YvanYin/Metric3D): a discriminative metric depth and surface normal estimator.
 - [IC-Light](https://github.com/lllyasviel/IC-Light): text-conditioned relighting model and background-conditioned relighting model.
 
 ## 🔗 Citation & License 
