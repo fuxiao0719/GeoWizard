@@ -147,4 +147,4 @@ We also encourage readers to follow these concurrent exciting works.
 }
 ```
 
-The code is under a 2-clause BSD License for non-commercial usage.
+The GeoWizard project is released under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) License.
