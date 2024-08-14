@@ -169,9 +169,21 @@ if __name__=="__main__":
         dtype = torch.float32
 
     # declare a pipeline
-    pipe = DepthNormalEstimationPipeline.from_pretrained(checkpoint_path, torch_dtype=dtype)
+    vae = AutoencoderKL.from_pretrained(checkpoint_path, subfolder='vae')
+    scheduler = DDIMScheduler.from_pretrained(checkpoint_path, subfolder='scheduler')
+    image_encoder = CLIPVisionModelWithProjection.from_pretrained(checkpoint_path, subfolder="image_encoder")
+    feature_extractor = CLIPImageProcessor.from_pretrained(checkpoint_path, subfolder="feature_extractor")
+    unet = UNet2DConditionModel.from_pretrained(checkpoint_path, subfolder="unet")
+
+    pipe = DepthNormalEstimationPipeline(vae=vae,
+                                image_encoder=image_encoder,
+                                feature_extractor=feature_extractor,
+                                unet=unet,
+                                scheduler=scheduler)
 
     logging.info("loading pipeline whole successfully.")
+
+    seed_all(seed)
     
     try:
         pipe.enable_xformers_memory_efficient_attention()
@@ -186,8 +198,6 @@ if __name__=="__main__":
 
         for test_file in tqdm(test_files, desc="Estimating Depth & Normal", leave=True):
 
-            seed_all(seed)
-            
             rgb_path = os.path.join(input_dir, test_file)
 
             # Read input image
