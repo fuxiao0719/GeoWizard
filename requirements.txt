@@ -2,6 +2,7 @@ torch == 2.0.1
 torchvision == 0.15.2
 xformers == 0.0.21
 diffusers == 0.25.0
+huggingface_hub == 0.21.3
 opencv-python
 numpy == 1.23.1
 Pillow
